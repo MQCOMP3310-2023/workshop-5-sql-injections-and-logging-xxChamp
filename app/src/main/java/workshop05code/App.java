@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 //Included for the logging exercise
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -29,7 +30,7 @@ public class App {
 
     private static final Logger logger = Logger.getLogger(App.class.getName());
     // End code for logging exercise
-    
+
     /**
      * @param args the command line arguments
      */
@@ -56,13 +57,14 @@ public class App {
             String line;
             int i = 1;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                logger.log(Level.INFO, line);
                 wordleDatabaseConnection.addValidWord(i, line);
                 i++;
             }
 
         } catch (IOException e) {
             System.out.println("Not able to load . Sorry!");
+            logger.log(Level.SEVERE, "Invalid word");
             System.out.println(e.getMessage());
             return;
         }
@@ -74,19 +76,21 @@ public class App {
             String guess = scanner.nextLine();
 
             while (!guess.equals("q")) {
-                System.out.println("You've guessed '" + guess+"'.");
+                logger.log(Level.INFO, guess);
+                System.out.println("You've guessed '" + guess + "'.");
 
-                if (wordleDatabaseConnection.isValidWord(guess)) { 
+                if (wordleDatabaseConnection.isValidWord(guess)) {
                     System.out.println("Success! It is in the the list.\n");
-                }else{
+                } else {
                     System.out.println("Sorry. This word is NOT in the the list.\n");
+                    logger.log(Level.INFO, guess);
                 }
 
-                System.out.print("Enter a 4 letter word for a guess or q to quit: " );
+                System.out.print("Enter a 4 letter word for a guess or q to quit: ");
                 guess = scanner.nextLine();
             }
         } catch (NoSuchElementException | IllegalStateException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Error", e);
         }
 
     }
